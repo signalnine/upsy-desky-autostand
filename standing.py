@@ -33,6 +33,10 @@ def get_current_desk_height():
     data = response.json()
     return float(data["value"])
 
+# Check if the given height is within the specified tolerance range of the target height
+def is_within_tolerance(height, target, tolerance=1.0):
+    return target - tolerance <= height <= target + tolerance
+
 # Set the desk height
 def set_desk_height(value):
     url = f"http://{IP_ADDRESS}/number/target_desk_height/set?value={value}"
@@ -58,7 +62,7 @@ def main():
             time_since_last_change = time.time() - last_height_change_time
 
             # If the desk is at standing height
-            if current_desk_height == STANDING_HEIGHT:
+            if is_within_tolerance(current_desk_height, STANDING_HEIGHT):
                 # Check if it's time to switch to sitting height
                 if time_since_last_change >= max_standing_time_at_stretch:
                     total_standing_time += max_standing_time_at_stretch
@@ -66,7 +70,7 @@ def main():
                     last_height_change_time = time.time()
 
             # If the desk is at sitting height
-            elif current_desk_height == SITTING_HEIGHT:
+            elif is_within_tolerance(current_desk_height, SITTING_HEIGHT):
                 total_sitting_time += time_since_last_change
 
                 # Check if it's time to switch to standing height
