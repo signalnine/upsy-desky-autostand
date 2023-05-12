@@ -53,6 +53,7 @@ def main():
     last_height_change_time = time.time()
     total_standing_time = 0
     total_sitting_time = 0
+    time_since_last_change = time.time()
 
     # Main loop
     while time.time() < end_time:
